@@ -238,7 +238,7 @@ Browser: http://localhost:8080/q/swagger-ui/
 
 ![Swagger UI 2](images/swagger-ui-2.png)
 
-Up to this moment, "mvn quarkus:dev" has been using its Dev Services capbility to dynamically provide a Postgres Database.  
+Up to this moment, "mvn quarkus:dev" has been using its Dev Services capability to dynamically provide a Postgres Database.  
 
 http://localhost:8080/q/dev/io.quarkus.quarkus-vertx-http/dev-services
 
@@ -287,6 +287,16 @@ Add a prefix of `%prod` so that things work more cleanly between your localhost 
 
 ![application.properties prod](images/application.properties-3.png)
 
+Here is the full listing if you just wish to copy & paste
+
+```
+%prod.quarkus.hibernate-orm.database.generation=update
+%prod.quarkus.datasource.jdbc.url=jdbc:postgresql://postgresql/todo
+%prod.quarkus.datasource.username=todo
+%prod.quarkus.datasource.password=todo
+quarkus.package.type=uber-jar
+```
+
 
 Make sure to "Ctrl-C" the `mvn quarkus:dev` and shut it down
 
@@ -314,8 +324,6 @@ drwxr-xr-x   4 burr  staff       128 Apr 23 15:29 test-classes
 ```
 
 The `qtodo-1.0.0-SNAPSHOT-runner.jar` is the one you want for Drag & Drop
-
-You can run a quick test of it by simply using
 
 
 ### Deploy via OpenShift Drag & Drop
@@ -358,11 +366,13 @@ Add
 
 Answer some questions
 
-PostgreSQL Connection Username: todo
-PostgreSQL Connection Password: todo
-PostgreSQL Database Name: todo
+- PostgreSQL Connection Username: todo
 
-and click Create
+- PostgreSQL Connection Password: todo
+
+- PostgreSQL Database Name: todo
+
+and click **Create**
 
 ![Postgres 5](images/postgres-5.png)
 
