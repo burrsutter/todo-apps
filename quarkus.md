@@ -432,10 +432,100 @@ Note: That trailing semi-colon is VERY important
 
 ![todos](images/voila-9.png)
 
-### Deploy via Kubernetes yamls
-
-
 ### Deploy via OpenShift S2I
 
-Create a git repo and `git commit` and `git push` the contents of qtodo in
+Assuming you followed the above instructions, just delete the current qtodo application
 
+![Delete application](images/delete-application-1.png)
+
+![Delete application](images/delete-application-2.png)
+
+Create a git repo and `git commit` and `git push` the contents of qtodo (or just use the one I am providing)
+
+Click +Add
+
+![+Add](images/s2i-1.png)
+
+Import from Git
+
+![Import from Git](images/s2i-2.png)
+
+Git Repo URL
+
+https://github.com/burrsutter/todo-apps
+
+And because I am using a sub-directory inside of a git repository, I need to click
+
+*Show advanced Git options*
+
+and type in `qtodo` there
+
+![git](images/s2i-3.png)
+
+Scroll-down, defaults should be fine
+
+![git](images/s2i-4.png)
+
+![git](images/s2i-5.png)
+
+Click Create
+
+The application will build and run, giving you a URL and you should see the Todos from your Drag & Drop deployment and testing still happily running in that same Postgres database as before.
+
+![Finish](images/s2i-finish.png)
+
+And you can create a webhook if you want future `git push` events to trigger a build and rollout of the application into your dev cluster
+
+[Webhooks on OpenShift](https://redhat-scholars.github.io/openshift-starter-guides/rhs-openshift-starter-guides/4.9/nationalparks-java-codechanges-github.html#prerequisite_github_account)
+
+
+
+### Deploy via Kubernetes yamls
+
+Assuming you followed the above instructions, just delete the current qtodo application
+
+![Delete application](images/delete-application-1.png)
+
+![Delete application](images/delete-application-2.png)
+
+
+Use `shift-command-p` on your keyboard
+
+
+![shift-command-p](images/add-quarkus-extensions-1.png)
+
+Hit Return
+
+![Extensions](images/add-quarkus-extensions-2.png)
+
+Type "Kube"
+
+![Kube](images/add-quarkus-extensions-3.png)
+
+Click it
+
+![Selected](images/add-quarkus-extensions-4.png)
+
+Hit Return
+
+The new dependency gets added to your pom.xml
+
+![Output](images/add-quarkus-extensions-5.png)
+
+Open up target to see what is in there
+
+![target](images/kubernetes-yamls-1.png)
+
+At the terminal, type `mvn package`
+
+and fail
+
+```
+[ERROR] Failed to execute goal io.quarkus.platform:quarkus-maven-plugin:2.8.1.Final:build (default) on project qtodo: Failed to build quarkus application: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
+[ERROR] 	[error]: Build step io.quarkus.kubernetes.client.deployment.KubernetesClientBuildStep#process threw an exception: io.fabric8.kubernetes.client.KubernetesClientException: JcaPEMKeyConverter is provided by BouncyCastle, an optional dependency. To use support for EC Keys you must explicitly add this dependency to classpath.
+[ERROR] 	at io.fabric8.kubernetes.client.internal.CertUtils.handleECKey(CertUtils.java:164)
+[ERROR] 	at io.fabric8.kubernetes.client.internal.CertUtils.loadKey(CertUtils.java:134)
+[ERROR] 	at io.fabric8.kubernetes.client.internal.CertUtils.createKeyStore(CertUtils.java:112)
+[ERROR] 	at io.fabric8.kubernetes.client.internal.CertUtils.createKeyStore(CertUtils.java:247)
+[ERROR] 	at io.fabric8.kubernetes.client.internal.SSLUtils.keyManagers(SSLUtils.java:153)
+```
