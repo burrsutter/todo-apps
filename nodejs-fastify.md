@@ -369,7 +369,7 @@ curl -X 'PUT' \
 
 ## OpenShift
 
-![Postgres 1](images/postgres-1.png)
+![Add](images/fastify-openshift-1.png)
 
 ![Postgres 2](images/postgres-2.png)
 
@@ -412,6 +412,93 @@ CREATE TABLE "Todo" (
     CONSTRAINT "Todo_pkey" PRIMARY KEY ("id")
 );
 ```
+
+Add - Import from Git
+
+![Import from Git 1](images/fastify-openshift-1.png)
+
+Advanced Options and context dir since I am using a sub-directory off the main root of the repo
+
+![Import from Git 2](images/fastify-openshift-2.png)
+
+Scroll down
+
+Change port to 3000
+
+click Deployment
+
+![Deployment](images/fastify-openshift-3.png)
+
+
+Add an environment variable
+
+```
+DATABASE_URL
+```
+
+Overriding user, password and server from your localhost dev env
+
+```
+postgresql://todo:todo@postgressql:5432/todo?schema=public
+```
+
+![env var](images/fastify-openshift-4.png)
+
+Looking for blue rings, it can take a couple of minutes
+
+![blue rings?](images/fastify-openshift-6.png)
+
+Copy that URL from the Route
+
+![URL](images/fastify-openshift-7.png)
+
+Edit curl-tests.sh and overlay the localhost:3000/api with the URL
+
+```
+URL='https://todo-apps-burrsitis-dev.apps.sandbox.x8i5.p1.openshiftapps.com/api'
+
+curl -X 'POST' \
+  $URL \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": 0,
+  "title": "Learn Node.js",
+  "completed": false
+}'
+
+curl -X 'POST' \
+  $URL \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": 0,
+  "title": "Learn Fastify",
+  "completed": false
+}'
+
+curl -X 'POST' \
+  $URL \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": 0,
+  "title": "Learn Prisma",
+  "completed": false
+}'
+
+curl -X 'POST' \
+  $URL \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": 0,
+  "title": "Happy Dance",
+  "completed": false
+}'
+
+```
+
 
 
 
