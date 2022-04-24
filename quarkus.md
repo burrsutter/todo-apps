@@ -1,5 +1,38 @@
-## Quarkus
+# Quarkus
 
+
+## Java Setup
+https://sdkman.io/
+
+```
+sdk install java 17.0.2-open
+sdk use java 17.0.2-open
+```
+
+
+```
+java -version 
+openjdk version "17.0.2" 2022-01-18
+```
+
+```
+sdk install maven 3.8.5
+sdk use maven 3.8.5
+```
+
+```
+mvn -v
+Apache Maven 3.8.5 (3599d3414f046de2324203b78ddcf9b5e4388aa0)
+```
+
+https://code.visualstudio.com/
+
+Community Edition of IntelliJ IDEA
+
+https://www.jetbrains.com/idea/download/#section=mac
+
+
+## New Quarkus Project
 
 https://code.quarkus.io/
 

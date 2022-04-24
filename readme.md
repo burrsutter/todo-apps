@@ -45,56 +45,20 @@ Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.6", GitCom
 
 ### Java
 
-https://sdkman.io/
+#### Quarkus 
 
-```
-sdk install java 17.0.2-open
-sdk use java 17.0.2-open
-```
+  [Quarkus](https://github.com/burrsutter/todo-apps/blob/main/quarkus.md)
 
+#### Spring Boot
 
-```
-java -version 
-openjdk version "17.0.2" 2022-01-18
-```
+  NOT STARTED
 
-```
-sdk install maven 3.8.5
-sdk use maven 3.8.5
-```
+### Node.js
 
-```
-mvn -v
-Apache Maven 3.8.5 (3599d3414f046de2324203b78ddcf9b5e4388aa0)
-```
+#### Fastify + Prisma
 
-https://code.visualstudio.com/
+  [Fastify](https://github.com/burrsutter/todo-apps/blob/main/nodejs-fastify.md)
 
-Community Edition of IntelliJ IDEA
+### .NET C#
 
-https://www.jetbrains.com/idea/download/#section=mac
-
-
-## Java: Quarkus 
-
-
-[Quarkus](https://github.com/burrsutter/todo-apps/blob/main/quarkus.md)
-
-
-
-## Java: Spring Boot
-
-
-
-## .NET C#
-
-https://visualstudio.microsoft.com/vs/mac/
-
-
-https://docs.microsoft.com/en-us/dotnet/core/install/macos
-
-
-![Visual Studio](images/visual-studio-1.png)
-
-## Node.js 
-
+  [.NET](https://github.com/burrsutter/todo-apps/blob/main/dotnet.md)
