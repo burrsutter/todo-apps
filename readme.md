@@ -74,7 +74,10 @@ Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.6", GitCom
 
 ## Quarkus
 
- 	[Quarkus](https://github.com/burrsutter/todo-apps/blob/main/quarkus.md)
+
+[Quarkus](https://github.com/burrsutter/todo-apps/blob/main/quarkus.md)
+
+
 
 ## Spring Boot
 
