@@ -1,6 +1,21 @@
 # CRUD RDBMS ToDos
 
-## My Setup
+REST API
+
+Create
+
+Read
+
+Update
+
+Delete
+
+Postgres
+
+[TodoMVC](https://todomvc.com/) Frontend UI
+
+
+## My Java Setup
 
 https://sdkman.io/
 
@@ -59,7 +74,7 @@ Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.6", GitCom
 
 ## Quarkus
 
- 	[Quarkus](./quarkus.md)
+ 	[Quarkus]([./quarkus.md](https://github.com/burrsutter/todo-apps/blob/main/quarkus.md))
 
 ## Spring Boot
 
@@ -76,3 +91,4 @@ https://docs.microsoft.com/en-us/dotnet/core/install/macos
 ![Visual Studio](images/visual-studio-1.png)
 
 ## Node.js 
+
