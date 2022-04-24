@@ -4,12 +4,19 @@
 https://code.quarkus.io/
 
 RESTEasy Reactive
+
 RESTEasy Reactive Jackson
+
 Hibernate ORM with Panache
+
 SmallRye OpenAPI
+
 SmallRye Health
+
 Micrometer Metrics
+
 Micrometer Registry Prometheus
+
 JDBC Driver - PostgresSQL
 
 
@@ -439,8 +446,25 @@ select * from todos;
 
 Note: That trailing semi-colon is VERY important
 
-
 ![todos](images/voila-9.png)
+
+
+Describe the schema
+
+```
+\d todo
+```
+
+```
+                         Table "public.todo"
+  Column   |          Type          | Collation | Nullable | Default
+-----------+------------------------+-----------+----------+---------
+ id        | bigint                 |           | not null |
+ completed | boolean                |           | not null |
+ ordering  | integer                |           |          |
+ title     | character varying(255) |           |          |
+ url       | character varying(255) |           |          |
+```
 
 ### Deploy via OpenShift S2I
 
