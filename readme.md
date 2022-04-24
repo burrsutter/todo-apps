@@ -59,7 +59,7 @@ Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.6", GitCom
 
 ## Quarkus
 
- 	[Quarkus](quarkus.md)
+ 	[Quarkus](./quarkus.md)
 
 ## Spring Boot
 
