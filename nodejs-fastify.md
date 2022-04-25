@@ -411,6 +411,9 @@ Click on Terminal and type `psql`
 
 ![psql](images/voila-6.png)
 
+```
+\c todo
+```
 
 ```
 CREATE TABLE "Todo" (
@@ -422,6 +425,10 @@ CREATE TABLE "Todo" (
     CONSTRAINT "Todo_pkey" PRIMARY KEY ("id")
 );
 ```
+
+![Postgres 6](images/postgres-6.png)
+
+Now go add the application
 
 Add - Import from Git
 
