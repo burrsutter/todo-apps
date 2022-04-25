@@ -369,6 +369,16 @@ curl -X 'PUT' \
 
 ## OpenShift
 
+Before deploying to OpenShift/Kubernetes, modify package.json to use `-a 0.0.0.0` by default fastify will bind to 127.0.0.1 instead.
+
+
+```
+"start": "fastify start -a 0.0.0.0 -l info app.js",
+```
+
+OpenShift will call the `npm start` command
+
+
 ![Add](images/fastify-openshift-0.png)
 
 ![Postgres 2](images/postgres-2.png)
@@ -439,7 +449,7 @@ DATABASE_URL
 Overriding user, password and server from your localhost dev env
 
 ```
-postgresql://todo:todo@postgressql:5432/todo?schema=public
+postgresql://todo:todo@postgresql:5432/todo?schema=public
 ```
 
 ![env var](images/fastify-openshift-4.png)
