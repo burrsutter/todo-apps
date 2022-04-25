@@ -549,12 +549,15 @@ And you can create a webhook if you want future `git push` events to trigger a b
 
 ### Deploy via Kubernetes yamls
 
-Assuming you followed the above instructions, just delete the current qtodo application
+This is the "manual" way of interacting with a Kubernetes cluster, where you need to manually build the docker/linux container image as well as manually apply the Kubernetes yaml. If you are very new to Kubernetes then I would encourage you to first stop and spend a few days with one of the various tutorials that can be found online.  Here is one that a bunch of Red Hat folks maintain.
 
-![Delete application](images/delete-application-1.png)
+[Kubernetes Tutorial](https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/index.html)
 
-![Delete application](images/delete-application-2.png)
+This also assumes you have spent a few days with Linux containers, Docker 
 
+[Containers Tutorial](https://redhat-scholars.github.io/containers-tutorial/template-tutorial/index.html)
+
+Back in your IDE (VS Code for Quarkus apps for me)
 
 Use `shift-command-p` on your keyboard
 
@@ -583,6 +586,16 @@ Open up target to see what is in there
 
 ![target](images/kubernetes-yamls-1.png)
 
+And for this part of the adventure, remove `quarkus.package.type=uber-jar` from application.properties
+
+Your resulting application.properties will look like the following
+
+```
+%prod.quarkus.hibernate-orm.database.generation=update
+%prod.quarkus.datasource.jdbc.url=jdbc:postgresql://postgresql/todo
+%prod.quarkus.datasource.username=todo
+%prod.quarkus.datasource.password=todo
+```
 
 At the terminal, type `mvn package`
 
@@ -626,3 +639,203 @@ If all goes well, you now have a kubernetes.yaml file which can be applied to mi
 Note: This does NOT include postgres, getting that service up and running on your Kubernetes cluster will need to be researched and executed manually
 
 ![target/kubernetes](images/kubernetes-yamls-2.png)
+
+
+For the purposes of this tutorial, I will reuse the Sandbox account that is ready, with a Postgres already up and running based on the previous steps.
+
+
+
+If needed delete any Drag & Drop or Import from Git qtodo application
+
+![Delete application](images/delete-application-1.png)
+
+![Delete application](images/delete-application-2.png)
+
+
+You will need to login to your Kubernetes cluster, the OpenShift login process is as follows
+
+![Login](images/login-openshift-1.png)
+
+![Login](images/login-openshift-2.png)
+
+![Login](images/login-openshift-3.png)
+
+You can download `oc` from here 
+
+https://mirror.openshift.com/pub/openshift-v4/clients/ocp/
+
+Once you have `oc` in your PATH, you can paste the "oc login" line into your terminal and hit enter/return.
+
+Note: This will update ~/.kube/config or the file specified by your KUBECONFIG environment variable 
+
+Make sure you are targeting the correct project/namespace.  "oc" has a short-hand to change namespaces on OpenShift clusters.
+
+For non-OpenShift clusters, ask your provider to give you the needed KUBECONFIG file to download and place locally, pointed to by your KUBECONFIG environment variable.
+
+
+```
+oc project burrsitis-dev
+Now using project "burrsitis-dev" on server "https://api.sandbox.x8i5.p1.openshiftapps.com:6443".
+```
+
+The kubectl variant is
+
+```
+kubectl config set-context --current --namespace=burrsitis-dev
+```
+
+This tutorial assumes you know how to get Postgres running, it needs to be up and happy already
+
+```
+kubectl get pods --show-labels
+```
+
+```
+kubectl get pods --show-labels
+NAME                 READY   STATUS    RESTARTS   AGE   LABELS
+postgresql-1-xxzk7   1/1     Running   0          48m   deployment=postgresql-1,deploymentconfig=postgresql,name=postgresql
+```
+
+```
+kubectl get services
+```
+
+```
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+postgresql   ClusterIP   172.30.140.110   <none>        5432/TCP   14h
+```
+
+And remember, the Quarkus application uses application.properties to determine the database connection parameters 
+
+```
+%prod.quarkus.hibernate-orm.database.generation=update
+%prod.quarkus.datasource.jdbc.url=jdbc:postgresql://postgresql/todo
+%prod.quarkus.datasource.username=todo
+%prod.quarkus.datasource.password=todo
+```
+
+Where the 2nd "postgresql" is the name of the Service
+
+Where "todo" is the name of the database
+
+You can verify these settings on the Postgres pod
+
+```
+POD=$(kubectl get pods -l name=postgresql -oname)
+echo $POD
+kubectl exec -it $POD -- /bin/bash
+```
+
+```
+psql
+\l
+```
+
+![psql](images/psql-kubectl-exec-1.png)
+
+```
+\c todo
+\dt
+select * from todo;
+```
+
+![psql](images/psql-kubectl-exec-2.png)
+
+
+To quit the psql session, 
+
+```
+\q
+```
+
+To exit the kubectl exec session,
+
+```
+exit
+```
+
+So there is one other trick needed for a vanilla Kubernetes world, you need to manually build your docker/linux container image and push it to a registry that is visible to your Kubernetes cluster.  
+
+
+Note: Quarkus also has the ability to compile to a native executable which has a wickedly fast startup time but for the purposes of making things easier here, we will stick with a typical Java jar style deployment.   Quarkus uses a thin jar architecture by default.  We used the fat jar for the drag & drop feature
+
+
+```
+ls -la src/main/docker
+total 48
+drwxr-xr-x@ 6 burr  staff   192 Apr 22 11:00 .
+drwxr-xr-x@ 6 burr  staff   192 Apr 23 18:41 ..
+-rw-r--r--@ 1 burr  staff  5239 Apr 22 11:00 Dockerfile.jvm
+-rw-r--r--@ 1 burr  staff  5048 Apr 22 11:00 Dockerfile.legacy-jar
+-rw-r--r--@ 1 burr  staff   671 Apr 22 11:00 Dockerfile.native
+-rw-r--r--@ 1 burr  staff   896 Apr 22 11:00 Dockerfile.native-micro
+```
+
+Where `Dockerfile.jvm` is the one we want
+
+The following assumes I want to eventually push this image to quay.io 
+```
+docker build -t quay.io/burrsutter/qtodo:1.0.0 -f src/main/docker/Dockerfile.jvm .
+```
+
+
+If you are running Docker Desktop then it will default docker.io.  You can replace `docker.io` with your favorite solution like `quay.io`, `gcr.io`, etc.
+
+```
+docker login quay.io
+```
+
+```
+docker push quay.io/burrsutter/qtodo:1.0.0
+```
+
+And one trick with quay.io, you need to mark the image as public as it defaults to private
+
+![quay.io 1](images/quay.io-1.png)
+
+![quay.io 2](images/quay.io-2.png)
+
+![quay.io 3](images/quay.io-3.png)
+
+![quay.io 4](images/quay.io-4.png)
+
+![quay.io 5](images/quay.io-5.png)
+
+Open and edit the default kubernetes.yaml file to adjust the image name
+
+```
+    spec:
+      containers:
+        - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: quay.io/burrsutter/qtodo:1.0.0
+          imagePullPolicy: Always
+```
+
+![Tweak Kubernetes yaml](images/kubernetes-yaml-1.png)
+
+And one more trick, if you are using Docker.io, you are likely to be [rate-limited](https://www.docker.com/increase-rate-limits/)
+
+
+
+Now apply the kubernetes yaml
+
+```
+kubectl apply -f target/kubernetes/kubernetes.yml
+```
+
+```
+service/qtodo created
+deployment.apps/qtodo created
+```
+
+```
+kubectl get pods
+NAME                    READY   STATUS              RESTARTS   AGE
+postgresql-1-xxzk7      1/1     Running             0          126m
+qtodo-69c784b7f-pzqmj   0/1     ContainerCreating   0          16s
+```
+
