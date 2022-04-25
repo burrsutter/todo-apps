@@ -583,9 +583,10 @@ Open up target to see what is in there
 
 ![target](images/kubernetes-yamls-1.png)
 
+
 At the terminal, type `mvn package`
 
-and fail
+and if it fails like the following:
 
 ```
 [ERROR] Failed to execute goal io.quarkus.platform:quarkus-maven-plugin:2.8.1.Final:build (default) on project qtodo: Failed to build quarkus application: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
@@ -596,3 +597,32 @@ and fail
 [ERROR] 	at io.fabric8.kubernetes.client.internal.CertUtils.createKeyStore(CertUtils.java:247)
 [ERROR] 	at io.fabric8.kubernetes.client.internal.SSLUtils.keyManagers(SSLUtils.java:153)
 ```
+
+Make sure all of these dependencies are in your pom.xml
+
+```
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-kubernetes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.70</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <version>1.70</version>
+    </dependency>
+```
+
+If failed, add the dependencies and try again
+
+At the terminal, type `mvn package`
+
+If all goes well, you now have a kubernetes.yaml file which can be applied to minikube, OpenShift, GKE, etc.  
+
+Note: This does NOT include postgres, getting that service up and running on your Kubernetes cluster will need to be researched and executed manually
+
+![target/kubernetes](images/kubernetes-yamls-2.png)
