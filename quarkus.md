@@ -778,6 +778,11 @@ The following assumes I want to eventually push this image to quay.io
 docker build -t quay.io/burrsutter/qtodo:1.0.0 -f src/main/docker/Dockerfile.jvm .
 ```
 
+If you have a Mac M1
+
+```
+docker buildx build -t quay.io/burrsutter/qtodo:1.0.0 --platform linux/amd64 -f src/main/docker/Dockerfile.jvm .
+```
 
 If you are running Docker Desktop then it will default docker.io.  You can replace `docker.io` with your favorite solution like `quay.io`, `gcr.io`, etc.
 
@@ -836,6 +841,39 @@ deployment.apps/qtodo created
 kubectl get pods
 NAME                    READY   STATUS              RESTARTS   AGE
 postgresql-1-xxzk7      1/1     Running             0          126m
-qtodo-69c784b7f-pzqmj   0/1     ContainerCreating   0          16s
+qtodo-744b854fc9-l5gjl  0/1     ContainerCreating   0          16s
 ```
+
+```
+NAME                     READY   STATUS    RESTARTS   AGE
+postgresql-1-xxzk7       1/1     Running   0          4h45m
+qtodo-744b854fc9-l5gjl   1/1     Running   0          63s
+```
+
+```
+kubectl get services
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+postgresql   ClusterIP   172.30.140.110   <none>        5432/TCP   18h
+qtodo        ClusterIP   172.30.61.249    <none>        80/TCP     39s
+```
+
+And the final trick is to get a public URL for the application.  That normally involves consulting with your Kubernetes provider's documentation on how they manage Ingress.  In the case of an OpenShift cluster, you can use a single command to generate the ingress known as Route.
+
+```
+oc expose service qtodo
+```
+
+```
+oc get routes
+NAME    HOST/PORT                                                    PATH   SERVICES   PORT   TERMINATION   WILDCARD
+qtodo   qtodo-burrsitis-dev.apps.sandbox.x8i5.p1.openshiftapps.com          qtodo      http                 None
+```
+
+The resulting URL can be used in your browser, just add `todo.html` to then end to serve the correct page
+
+
+
+
+
+
 
