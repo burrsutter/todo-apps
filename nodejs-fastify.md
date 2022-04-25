@@ -369,7 +369,7 @@ curl -X 'PUT' \
 
 ## OpenShift
 
-![Add](images/fastify-openshift-1.png)
+![Add](images/fastify-openshift-0.png)
 
 ![Postgres 2](images/postgres-2.png)
 
