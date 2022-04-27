@@ -872,6 +872,19 @@ qtodo   qtodo-burrsitis-dev.apps.sandbox.x8i5.p1.openshiftapps.com          qtod
 The resulting URL can be used in your browser, just add `todo.html` to then end to serve the correct page
 
 
+Congratulations!
+
+### Future editions
+
+- Add some continous testing, here are some sample test cases
+
+https://github.com/cescoffier/quarkus-todo-app/blob/main/quarkus-todo/src/test/java/io/quarkus/sample/TodoResourceTest.java
+
+- Add in some remote dev mode
+
+https://quarkus.io/guides/maven-tooling#remote-development-mode
+
+
 
 
 
