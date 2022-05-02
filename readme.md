@@ -45,6 +45,8 @@ Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.6", GitCom
 
 ### Java
 
+Java folks to perfer port 8080
+
 #### Quarkus 
 
   [Quarkus](https://github.com/burrsutter/todo-apps/blob/main/quarkus.md)
@@ -55,10 +57,14 @@ Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.6", GitCom
 
 ### Node.js
 
+Node.js folks tend to prefer port 3000
+
 #### Fastify + Prisma
 
   [Fastify](https://github.com/burrsutter/todo-apps/blob/main/nodejs-fastify.md)
 
 ### .NET C#
+
+C# tends to prefer port 5000
 
   [.NET](https://github.com/burrsutter/todo-apps/blob/main/dotnet.md)
