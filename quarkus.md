@@ -368,6 +368,9 @@ The `qtodo-1.0.0-SNAPSHOT-runner.jar` is the one you want for Drag & Drop
 
 ### Deploy via OpenShift Drag & Drop
 
+[Video recording of the Drag & Drop](https://youtu.be/nNWDCLg8ZhI)
+
+
 For an easy way to get an OpenShift, go to https://developers.redhat.com/developer-sandbox/get-started
 
 [OpenShift Sandbox](https://developers.redhat.com/developer-sandbox/get-started)
@@ -500,6 +503,8 @@ Describe the schema
 ```
 
 ### Deploy via OpenShift S2I
+
+[Video recording of Import from Git](https://youtu.be/dRjr5C27LVU)
 
 Assuming you followed the above instructions, just delete the current qtodo application
 
