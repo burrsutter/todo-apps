@@ -20,61 +20,103 @@ npx --version
 8.5.0
 ```
 
-```
-mkdir netodo
-cd netodo
-```
-https://expressjs.com/en/starter/generator.html
-
-```
-npx express-generator --git --no-view
-```
-
-```
-Need to install the following packages:
-  express-generator
-Ok to proceed? (y) y
-```
-
-```
-tree
-.
-├── app.js
-├── bin
-│   └── www
-├── package.json
-├── public
-│   ├── images
-│   ├── index.html
-│   ├── javascripts
-│   └── stylesheets
-│       └── style.css
-└── routes
-    ├── index.js
-    └── users.js
-```
-
-```
-npm install
-```
-
-```
-npm start
-```
-
-![Browser](images/express-1.png)
 
 
-![Browser](images/express-2.png)
+### Create Schema
+
+Install Postgres
+https://postgresapp.com/
+
+Install pgAdmin
+https://www.pgadmin.org/
 
 
-Ctrl-c to stop `npm start`
-
-Modify port to allow for environment override and 8080 which is more common to use in a linux container world
-
-Open app.js and the following lines BEFORE `module.exports = app;`
+Connect to your database engine
 
 ```
+psql -U postgres
+
+\l
+
+```
+
+Create role
+
+```
+\du
+
+CREATE ROLE todo WITH LOGIN PASSWORD 'todo';
+
+\du
+```
+
+Create database
+
+```
+CREATE DATABASE todo with OWNER todo;
+
+\c todo todo
+
+```
+
+Create table
+
+```
+CREATE TABLE IF NOT EXISTS todo (
+    id        SERIAL PRIMARY KEY,
+    title     VARCHAR(255),
+    completed boolean,
+    ordering  integer,
+    url       VARCHAR(255)
+);
+
+\dt
+```
+
+### Create Code
+
+
+```
+mkdir express-todo
+npm init -y
+touch index.js
+```
+
+```
+npm install express
+npm install pg
+
+npm install -g nodemon
+```
+
+Modify package.json
+
+```
+{
+  "name": "express-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "dev" : "nodemon ./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.7.3"
+  }
+}
+```
+
+Edit index.js
+
+```
+const express = require('express');
+const app = express();
+
 var port = process.env.PORT || 8080;
 
 app.listen(port, function () {
@@ -82,98 +124,309 @@ app.listen(port, function () {
 });
 ```
 
-```
-npm start
-```
-
-![Browser with 8080](images/express-3.png)
-
-Ctrl-c to stop `npm start`
-
-Add in `nodemon` to provide dynamic reloading to acheive edit-save-refresh
+Start dev runtime
 
 ```
-npm install --save-dev nodemon 
+npm run dev
 ```
 
-Open and edit package.json 
+Test with a curl
+
+```
+curl localhost:8080
+```
+
+Results
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /</pre>
+</body>
+</html>
+```
+
+https://insomnia.rest/download
+
+![Insomnia](images/express-todo-1.png)
+
+Add db.js, holds the database connection
+
+```
+const Pool = require("pg").Pool;
+
+const pool = new Pool({
+  user: "todo",
+  password: "todo",
+  database: "todo",
+  host: "localhost",
+  port: 5432
+})
+
+module.exports = pool;
+```
+
+Edit index.js to require `db` and use express.json, giving us access to request.body
+
+```
+const express = require('express');
+const app = express();
+const pool = require("./db");
+
+app.use(express.json());
+
+
+// get all todos
+
+// get a todo
+
+// create a todo
+
+// update a todo
+
+// delete a todo
+
+
+var port = process.env.PORT || 8080;
+
+app.listen(port, function () {
+  console.log('my app listening on port ' + port + '!');
+});
+
+```
+
+### POST/Create
+
+Edit index.js for POST/create
+
+```
+app.post("/api", async(req, res) => {
+    try {
+      console.log(req.body);
+    } catch (err) {
+      console.error(err.message);
+    }
+})
+```
+
+Test via a REST Client
+
+![POST](images/express-todo-2.png)
+
+![Console](images/express-todo-3.png)
+
+Edit index.js to persist todo to database
+
+```
+// create a todo
+app.post("/api", async(req, res) => {
+    try {      
+      const { title } = req.body;
+      const { completed } = req.body;
+      console.log(title + ' ' + completed);
+      const newTodo = 
+      await pool.query("INSERT INTO todo (title, completed) VALUES ($1, $2) RETURNING *",
+       [title, completed]);
+      res.json(newTodo); 
+    } catch (err) {
+      console.error(err.message);
+    }
+})
+```
+
+Test with REST Client
+
+
+![POST](images/express-todo-4.png)
 
 ```
 {
-  "name": "netodo",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "devStart": "nodemon server.js",
-    "start": "node ./bin/www"
-  },
-  "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "morgan": "~1.9.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.16"
-  }
+	"title" : "Love JavaScript",
+	"completed" : false
 }
-
-```
-
-```
-npm run devStart
-```
-
-```
-open localhost:8080/users
-```
-
-Now open and modify `users.js`
-
-```
-var express = require('express');
-var router = express.Router();
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('things have changed');
-});
-
-module.exports = router;
-```
-
-Save and refresh the browser
-
-![Browser after refresh](images/express-4.png)
-
-Adding a postgres database connection
-
-```
-npm install pg
-```
-
-And launch a local postgres
-```
-docker run --name todo -e POSTGRESQL_USER=todo -e POSTGRESQL_PASSWORD=todo -e POSTGRESQL_DATABASE=todo -d -p 5432:5432 centos/postgresql-10-centos7
-```
-
-Create a directory called `db` and add a file called `index.js`.  
-
-
-Create a directory called `api` and add a file called `todo.js`.  
-
-
-Inside the routes directory create a new file called `todo.js`
-
-
-Edit app.js
-
-```
-npm run devStart
-```
-
-```
-open http://localhost:8080/api
 ```
 
 
+And verify with psql
+
+```
+select * from todo;
+```
+
+![psql](images/express-todo-5.png)
+
+### GET/Read
+
+Edit index.js
+
+```
+// get all todos
+app.get("/api", async(req, res) => {
+    try {
+      const allTodos = await pool.query("SELECT * FROM todo");
+      res.json(allTodos.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+```
+![GET](images/express-todo-6.png)
+
+Add a few more records via POST
+
+```
+curl -d '{"title":"Love Express", "completed":false}' -H "Content-Type: application/json" -X POST http://localhost:8080/api
+
+curl -d '{"title":"Love Postgres", "completed":false}' -H "Content-Type: application/json" -X POST http://localhost:8080/api
+
+curl -d '{"title":"Be Awesome", "completed":false}' -H "Content-Type: application/json" -X POST http://localhost:8080/api
+```
+
+
+![GET](images/express-todo-7.png)
+
+
+```
+select * from todo;
+ id |      title      | completed | ordering | url
+----+-----------------+-----------+----------+-----
+  1 | Love JavaScript | f         |          |
+  2 | Love Express    | f         |          |
+  3 | Love Postgres   | f         |          |
+  4 | Be Awesome      | f         |          |
+(4 rows)
+```
+
+### GET/Read a Todo
+
+```
+// get a todo
+app.get("/api/:id", async(req, res) => {    
+    try {
+        const { id } = req.params;
+        const todo = await pool.query("SELECT * FROM todo WHERE id = $1", [id]);
+        res.json(todo.rows[0]);
+      } catch (err) {
+          console.error(err.message);
+      }  
+})
+```
+
+And test with a curl 
+
+```
+curl localhost:8080/api/1
+```
+
+```
+{"id":1,"title":"Love JavaScript","completed":false,"ordering":null,"url":null}
+```
+
+### PATCH/Update a Todo 
+
+Edit index.js 
+
+```
+// update a todo
+app.patch("/api/:id", async(req, res) => {    
+    try {
+        const { id } = req.params;
+        const { title } = req.body;
+        const { completed } = req.body;
+        const todo = await pool.query("UPDATE todo SET title = $1, completed = $2 WHERE id = $3", 
+         [title, completed, id]);
+        res.json("Updated");        
+      } catch (err) {
+          console.error(err.message);
+      }  
+})
+```
+
+![PATCH](images/express-todo-8.png)
+
+```
+curl localhost:8080/api/2
+{"id":2,"title":"Be Awesome Again","completed":true,"ordering":null,"url":null}
+```
+
+### DELETE a Todo 
+
+```
+// delete a todo
+app.delete("/api/:id", async(req, res) => {    
+    try {
+        const { id } = req.params;
+        const todo = await pool.query("DELETE FROM todo WHERE id = $1", [id]);
+        res.json("Deleted");
+      } catch (err) {
+          console.error(err.message);
+      }  
+})
+```
+
+![DELETE](images/express-todo-9.png)
+
+
+Verify via psql
+
+```
+select * from todo;
+ id |      title      | completed | ordering | url
+----+-----------------+-----------+----------+-----
+  1 | Love JavaScript | f         |          |
+  3 | Love Postgres   | f         |          |
+  4 | Be Awesome      | f         |          |
+(3 rows)
+```
+
+Verify via curl
+```
+curl localhost:8080/api
+[{"id":1,"title":"Love JavaScript","completed":false,"ordering":null,"url":null},{"id":3,"title":"Love Postgres","completed":false,"ordering":null,"url":null},{"id":4,"title":"Be Awesome","completed":false,"ordering":null,"url":null}]
+```
+
+### Add TodoMVC GUI
+
+Create a directory called "public" and add the files from...
+
+Edit index.js
+
+```
+const path = require('path');
+
+// static page serving
+app.use(express.static(path.join(__dirname, 'public')));
+app.get("/", async(req,res,next) => {
+  res.render('index');
+})
+```
+
+Browser to load the UI
+
+![GUI](images/express-todo-10.png)
+
+Make changes
+
+Note: not everything is operational but the basics work
+
+![GUI](images/express-todo-11.png)
+
+And check via psql
+
+```
+select * from todo;
+ id |      title      | completed | ordering | url
+----+-----------------+-----------+----------+-----
+  4 | Be More Awesome | f         |          |
+  1 | Love JavaScript | t         |          |
+(2 rows)
+```
+
+A nice video the describes REST+CRUD+Postgres
+
+https://www.youtube.com/watch?v=_Mun4eOOf2Q

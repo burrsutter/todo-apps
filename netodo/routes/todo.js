@@ -17,7 +17,7 @@ router.get('/', (request, response) => {
 
 router.get('/:id', (request, response) => {
   const { id } = request.params;
-
+  console.log('looking for todo ${request.params.id}');
   todo.find(id).then(result => {
     if (result.rowCount === 0) {
       response.status(404);
