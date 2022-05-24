@@ -1,6 +1,7 @@
 const express = require('express');
 const { application_name } = require('pg/lib/defaults');
 const app = express();
+require('dotenv').config()
 const pool = require("./db");
 const path = require('path');
 

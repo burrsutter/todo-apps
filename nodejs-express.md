@@ -20,6 +20,9 @@ npx --version
 8.5.0
 ```
 
+A nice video the describes REST+CRUD+Postgres
+
+https://www.youtube.com/watch?v=_Mun4eOOf2Q
 
 
 ### Create Schema
@@ -31,7 +34,7 @@ Install pgAdmin
 https://www.pgadmin.org/
 
 
-Connect to your database engine
+Using your terminal, connect to your database engine
 
 ```
 psql -U postgres
@@ -427,6 +430,46 @@ select * from todo;
 (2 rows)
 ```
 
-A nice video the describes REST+CRUD+Postgres
 
-https://www.youtube.com/watch?v=_Mun4eOOf2Q
+### Ready for Kubernetes/OpenShift
+
+Move configuration into environment variables
+
+```
+npm install dotenv
+```
+
+Create a file named `.env`
+
+With the following contents:
+
+```
+DB_NAME=todo
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=todo
+DB_PASS=todo
+```
+
+Modify db.js
+
+```
+const pool = new Pool({
+  user: process.env.DB_USER || "todo",
+  password: process.env.DB_PASS || "todo",
+  database: process.env.DB_NAME || "todo",
+  host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 5432
+})
+```
+
+Modify index.js
+
+And insert the following line BEFORE `const pool = require("./db")`
+
+```
+require('dotenv').config()
+```
+
+
+
