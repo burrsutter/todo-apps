@@ -471,5 +471,108 @@ And insert the following line BEFORE `const pool = require("./db")`
 require('dotenv').config()
 ```
 
+### OpenShift Import from git
 
+For an easy way to get an OpenShift, go to https://developers.redhat.com/developer-sandbox/get-started
+
+[OpenShift Sandbox](https://developers.redhat.com/developer-sandbox/get-started)
+
+Account creation and login skipped for the purposes of this tutorial
+
+
+#### First add the Postgres database
+
+![Postgres 1](images/express-openshift-1.png)
+
+![Postgres 2](images/express-openshift-2.png)
+
+![Postgres 3](images/express-openshift-3.png)
+
+![Postgres 4](images/express-openshift-4.png)
+
+![Postgres 5](images/express-openshift-5.png)
+
+![Postgres 6](images/express-openshift-6.png)
+
+![Postgres 7](images/express-openshift-7.png)
+
+```
+psql -U todo
+
+\c todo
+```
+
+
+```
+CREATE TABLE IF NOT EXISTS todo (
+    id        SERIAL PRIMARY KEY,
+    title     VARCHAR(255),
+    completed boolean,
+    ordering  integer,
+    url       VARCHAR(255)
+);
+```
+
+```
+\dt
+```
+
+![Postgres 8](images/express-openshift-8.png)
+
+
+#### Import code from git
+
++Add
+
+
+![Import from git](images/express-openshift-9.png)
+
+```
+https://github.com/burrsutter/todo-apps
+```
+
+Show Advanced Git options
+
+![Advanced Git options](images/express-openshift-10.png)
+
+![Pods](images/express-openshift-11.png)
+
+![Pods](images/express-openshift-12.png)
+
+![Deployment](images/express-openshift-13.png)
+
+Add the Env vars originally set in the .env file or db.js
+
+```
+DB_USER
+DB_PASS
+DB_NAME
+DB_HOST
+DB_PORT
+```
+
+![Env vars](images/express-openshift-14.png)
+
+Watch the redeployment
+
+![Redeployment](images/express-openshift-15.png)
+
+Find for URL
+
+![URL](images/express-openshift-16.png)
+
+Add some todo items
+
+![TodoMVC](images/express-openshift-17.png)
+
+Back to the Postgresql Terminal 
+
+
+```
+psql -U todo
+\c todo
+select * from todo;
+```
+
+![Verified database records](images/express-openshift-18.png)
 
