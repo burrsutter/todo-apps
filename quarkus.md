@@ -879,6 +879,15 @@ The resulting URL can be used in your browser, just add `todo.html` to then end 
 
 Congratulations!
 
+### Tips
+
+`Shift-Command-p` to bring up Command Palette and select Quarkus
+
+![Shift-Command-p](images/shift-command-p.png)
+
+![Shift-Command-p Quarkus](images/shift-command-p-quarkus-add.png)
+
+
 ### Future editions
 
 - Add some continous testing, here are some sample test cases
