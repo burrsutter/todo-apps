@@ -148,6 +148,21 @@ Shift-Option-O (Organize Imports)
 
 ![Todo Entity started](images/q-todo-entity-1.png)
 
+```
+    @Column(unique = true)
+    public String title;
+
+    public boolean completed;
+
+    @Column(name = "ordering")
+    public int order;
+
+    public String url;
+```
+
+Shift-Option-O (Organize Imports)
+
+
 New File
 
 ```
